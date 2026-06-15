@@ -2,7 +2,7 @@ const CACHE_NAME = 'eng-portal-cache-v4';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
-  './manifest-1.json'
+  './manifest.json'
 ];
 
 // 서비스 워커 설치 및 앱 셸 캐싱
