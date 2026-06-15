@@ -24,6 +24,52 @@
             overflow: hidden;
             background-color: #f5f6fa;
         }
+
+        /* 🌟 1. 인트로 영상 화면 CSS 추가 */
+        #intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000; /* 영상 로딩 전 검은 배경 */
+            z-index: 9999; /* 가장 위에 표시 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease; /* 부드럽게 사라지는 효과 */
+        }
+        
+        #intro-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 화면 비율에 맞게 꽉 채움. 짤리는게 싫으면 contain으로 변경 */
+        }
+
+        #skip-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(255, 255, 255, 0.3);
+            color: white;
+            border: 1px solid white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            z-index: 10000;
+            transition: background 0.3s;
+        }
+
+        #skip-btn:hover {
+            background-color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* 인트로가 사라질 때 쓸 클래스 */
+        .fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
         
         /* 상단 메뉴바 */
         .header {
@@ -49,7 +95,7 @@
         .btn-group {
             display: flex;
             gap: 6px;
-            flex-wrap: wrap; /* 버튼이 많아질 경우 모바일에서 줄바꿈 허용 */
+            flex-wrap: wrap; 
             justify-content: center;
         }
         .btn {
@@ -131,7 +177,7 @@
         .view-left #pane-left { display: block; }
         .view-right #pane-right { display: block; }
         .view-blank #pane-blank { display: block; }
-        .view-arrange #pane-arrange { display: block; } /* 🌟 추가된 배열 연습 화면 */
+        .view-arrange #pane-arrange { display: block; } 
 
         /* 모바일 대응 (화면이 작을 때 상단바 자동 조절) */
         @media (max-width: 850px) {
@@ -142,75 +188,96 @@
                 gap: 10px;
             }
             .main-container {
-                height: calc(100% - 110px); /* 헤더 높이 증가에 따른 여백 수정 */
+                height: calc(100% - 110px); 
             }
-            .title { display: none; } /* 모바일에서는 제목 숨기기 */
+            .title { display: none; } 
         }
     </style>
 </head>
-<body class="view-left"> <!-- 기본적으로 지문 보기가 활성화됩니다 -->
+<body class="view-left"> 
+
+    <!-- 🌟 2. 인트로 영상 영역 추가 -->
+    <div id="intro-screen">
+        <!-- 모바일 자동 재생을 위해 muted와 playsinline 필수 -->
+        <video id="intro-video" autoplay muted playsinline>
+            <!-- 여기에 실제 비디오 파일 경로를 넣어주세요 -->
+            <source src="park.mp4" type="video/mp4">
+            브라우저가 동영상을 지원하지 않습니다.
+        </video>
+        <button id="skip-btn" onclick="closeIntro()">Skip ➔</button>
+    </div>
 
     <header class="header">
         <span class="title">영어 통합 학습관</span>
         
-        <!-- 중앙 탭 버튼 -->
         <div class="btn-group">
             <button id="btn-left" class="btn active" onclick="changeView('left')">지문 보기</button>
             <button id="btn-right" class="btn" onclick="changeView('right')">플래시카드</button>
             <button id="btn-blank" class="btn" onclick="changeView('blank')">지문 빈칸</button>
-            <button id="btn-arrange" class="btn" onclick="changeView('arrange')">배열 연습</button> <!-- 🌟 배열 연습 버튼 추가 -->
+            <button id="btn-arrange" class="btn" onclick="changeView('arrange')">배열 연습</button> 
         </div>
         
-        <!-- 우측 도구 및 링크 -->
         <div class="util-group">
             <button class="btn-util" onclick="toggleFullScreen()">전체화면</button>
             <div class="links-group">
                 <a href="https://ryul0520.github.io/eng/" target="_blank">지문 ↗</a>
                 <a href="https://ryul0520.github.io/eng_flash/" target="_blank">카드 ↗</a>
                 <a href="https://ryul0520.github.io/eng_emp/" target="_blank">빈칸 ↗</a>
-                <a href="https://ryul0520.github.io/eng_arrange/" target="_blank">배열 ↗</a> <!-- 🌟 배열 연습 링크 추가 -->
+                <a href="https://ryul0520.github.io/eng_arrange/" target="_blank">배열 ↗</a> 
             </div>
         </div>
     </header>
 
     <main class="main-container">
-        <!-- 1. 영어 지문 영역 -->
         <div class="pane" id="pane-left">
             <iframe src="https://ryul0520.github.io/eng/"></iframe>
         </div>
         
-        <!-- 2. 플래쉬 카드 영역 -->
         <div class="pane" id="pane-right">
             <iframe src="https://ryul0520.github.io/eng_flash/"></iframe>
         </div>
 
-        <!-- 3. 지문 빈칸 영역 -->
         <div class="pane" id="pane-blank">
             <iframe src="https://ryul0520.github.io/eng_emp/"></iframe>
         </div>
 
-        <!-- 4. 🌟 배열 연습 영역 추가 -->
         <div class="pane" id="pane-arrange">
             <iframe src="https://ryul0520.github.io/eng_arrange/"></iframe>
         </div>
     </main>
 
     <script>
-        // 뷰(탭) 변경 기능
+        // 🌟 3. 인트로 제어 스크립트
+        const introScreen = document.getElementById('intro-screen');
+        const introVideo = document.getElementById('intro-video');
+
+        // 인트로 종료 함수 (부드럽게 페이드아웃 후 제거)
+        function closeIntro() {
+            introScreen.classList.add('fade-out');
+            setTimeout(() => {
+                introScreen.style.display = 'none';
+            }, 500); // CSS의 transition 시간(0.5s)과 동일하게 설정
+        }
+
+        // 동영상 재생이 자연스럽게 끝났을 때 자동으로 닫힘
+        introVideo.addEventListener('ended', closeIntro);
+
+        // 만약 영상 경로가 잘못되었거나 로딩에 실패하면 즉시 앱 화면을 보여줌
+        introVideo.addEventListener('error', closeIntro);
+
+        // 기존 뷰(탭) 변경 기능
         function changeView(viewType) {
             const body = document.body;
             const btnLeft = document.getElementById('btn-left');
             const btnRight = document.getElementById('btn-right');
             const btnBlank = document.getElementById('btn-blank');
-            const btnArrange = document.getElementById('btn-arrange'); // 🌟 추가된 요소
+            const btnArrange = document.getElementById('btn-arrange'); 
 
-            // 버튼 스타일 초기화
             btnLeft.classList.remove('active');
             btnRight.classList.remove('active');
             btnBlank.classList.remove('active');
             btnArrange.classList.remove('active');
 
-            // 해당하는 영역 노출 및 버튼 활성화
             if (viewType === 'left') {
                 body.className = 'view-left';
                 btnLeft.classList.add('active');
@@ -220,7 +287,7 @@
             } else if (viewType === 'blank') {
                 body.className = 'view-blank';
                 btnBlank.classList.add('active');
-            } else if (viewType === 'arrange') { // 🌟 배열 연습 로직 추가
+            } else if (viewType === 'arrange') { 
                 body.className = 'view-arrange';
                 btnArrange.classList.add('active');
             }
