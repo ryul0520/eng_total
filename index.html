@@ -49,6 +49,8 @@
         .btn-group {
             display: flex;
             gap: 6px;
+            flex-wrap: wrap; /* 버튼이 많아질 경우 모바일에서 줄바꿈 허용 */
+            justify-content: center;
         }
         .btn {
             background-color: #34495e;
@@ -93,6 +95,8 @@
         .links-group {
             display: flex;
             gap: 12px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
         }
         .links-group a {
             color: #bdc3c7;
@@ -126,7 +130,8 @@
         /* 활성화 상태에 따른 화면 표시 */
         .view-left #pane-left { display: block; }
         .view-right #pane-right { display: block; }
-        .view-blank #pane-blank { display: block; } /* 🌟 추가된 빈칸 채우기 화면 */
+        .view-blank #pane-blank { display: block; }
+        .view-arrange #pane-arrange { display: block; } /* 🌟 추가된 배열 연습 화면 */
 
         /* 모바일 대응 (화면이 작을 때 상단바 자동 조절) */
         @media (max-width: 850px) {
@@ -137,7 +142,7 @@
                 gap: 10px;
             }
             .main-container {
-                height: calc(100% - 100px);
+                height: calc(100% - 110px); /* 헤더 높이 증가에 따른 여백 수정 */
             }
             .title { display: none; } /* 모바일에서는 제목 숨기기 */
         }
@@ -153,6 +158,7 @@
             <button id="btn-left" class="btn active" onclick="changeView('left')">지문 보기</button>
             <button id="btn-right" class="btn" onclick="changeView('right')">플래시카드</button>
             <button id="btn-blank" class="btn" onclick="changeView('blank')">지문 빈칸</button>
+            <button id="btn-arrange" class="btn" onclick="changeView('arrange')">배열 연습</button> <!-- 🌟 배열 연습 버튼 추가 -->
         </div>
         
         <!-- 우측 도구 및 링크 -->
@@ -162,6 +168,7 @@
                 <a href="https://ryul0520.github.io/eng/" target="_blank">지문 ↗</a>
                 <a href="https://ryul0520.github.io/eng_flash/" target="_blank">카드 ↗</a>
                 <a href="https://ryul0520.github.io/eng_emp/" target="_blank">빈칸 ↗</a>
+                <a href="https://ryul0520.github.io/eng_arrange/" target="_blank">배열 ↗</a> <!-- 🌟 배열 연습 링크 추가 -->
             </div>
         </div>
     </header>
@@ -177,9 +184,14 @@
             <iframe src="https://ryul0520.github.io/eng_flash/"></iframe>
         </div>
 
-        <!-- 3. 🌟 지문 빈칸 영역 추가 -->
+        <!-- 3. 지문 빈칸 영역 -->
         <div class="pane" id="pane-blank">
             <iframe src="https://ryul0520.github.io/eng_emp/"></iframe>
+        </div>
+
+        <!-- 4. 🌟 배열 연습 영역 추가 -->
+        <div class="pane" id="pane-arrange">
+            <iframe src="https://ryul0520.github.io/eng_arrange/"></iframe>
         </div>
     </main>
 
@@ -190,11 +202,13 @@
             const btnLeft = document.getElementById('btn-left');
             const btnRight = document.getElementById('btn-right');
             const btnBlank = document.getElementById('btn-blank');
+            const btnArrange = document.getElementById('btn-arrange'); // 🌟 추가된 요소
 
             // 버튼 스타일 초기화
             btnLeft.classList.remove('active');
             btnRight.classList.remove('active');
             btnBlank.classList.remove('active');
+            btnArrange.classList.remove('active');
 
             // 해당하는 영역 노출 및 버튼 활성화
             if (viewType === 'left') {
@@ -206,6 +220,9 @@
             } else if (viewType === 'blank') {
                 body.className = 'view-blank';
                 btnBlank.classList.add('active');
+            } else if (viewType === 'arrange') { // 🌟 배열 연습 로직 추가
+                body.className = 'view-arrange';
+                btnArrange.classList.add('active');
             }
         }
 
